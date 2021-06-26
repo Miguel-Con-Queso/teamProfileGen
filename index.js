@@ -3,25 +3,11 @@ const inquirer = require('inquirer');
 
 const questions = [
     {
-        type: 'list',
-        name: 'role',
-        message: "What is this employee's role?",
-        choices: ['Manager', 'Engineer', 'Intern'],
-        validate: roleInput => {
-            if (roleInput) {
-                return true;
-            } else {
-                console.log('Please select a role');
-                return false;
-            }
-        }
-    },
-    {
         type: 'input',
-        name: 'name',
-        message: "What is this employee's name?",
-        validate: nameInput => {
-            if (nameInput) {
+        name: 'managerName',
+        message: "What is the Manager's name?",
+        validate: mNameInput => {
+            if (mNameInput) {
                 return true;
             } else {
                 console.log("Please provide an employee name");
@@ -31,14 +17,38 @@ const questions = [
     },
     {
         type: 'input',
-        name: 'id',
-        message: "What is this employee's ID number?",
-        validate: idInput => {
-            if (idInput) {
+        name: 'managerID',
+        message: "What is the manager's ID number?",
+        validate: mIDInput => {
+            if (mIDInput) {
                 return true;
             } else {
                 console.log("Please enter an ID number");
                 return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'managerEmail',
+        message: "What is the manager's email address?",
+        validate: mEmailInput => {
+            if (mEmailInput) {
+                return true;
+            } else {
+                console.log("Please submit an email address");
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'officeNumber',
+        message: "What is the manager's office number?",
+        validate: officeNumberInput => {
+            if (officeNumberInput) {
+                return true;
+            } else {
+                console.log("Please add an office Number");
             }
         }
     }
