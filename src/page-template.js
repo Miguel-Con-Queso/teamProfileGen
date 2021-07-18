@@ -1,10 +1,9 @@
-const generateAbout = aboutText => {
-    if (!aboutText) {
-        return '';
-    }
-}
+const fs = require('fs');
+const inquirer = require('inquirer');
+const index = require('../index.js');
+const genSite = require('../utils/generate-site.js');
 
-const generateTeam = teamArr => {
+/* const generateTeam = teamArr => {
     return `
     <section class="my-3" id="team">
     <h2 class="text-dark bg-primary p-2 display-inline-block">Work</h2>
@@ -29,12 +28,10 @@ const generateTeam = teamArr => {
     </div>
     </section>
     `;
-};
+}; */
 
-module.exports = templateData => {
-    // destructure page data by section
-    const { teamMembers, about, ...header } = templateData;
-  
+module.exports = generateHTML = (managerData, engineerData, internData) => {
+    genSite.teamArrToHTML(managerData, engineerData, internData)
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -52,19 +49,11 @@ module.exports = templateData => {
     <body>
       <header>
         <div class="container flex-row justify-space-between align-center py-3">
-          <h1 class="page-title text-secondary bg-dark py-2 px-3">${header.name}</h1>
-          <nav class="flex-row">
-            <a class="ml-2 my-1 px-2 py-1 bg-secondary text-dark" href="https://github.com/${header.github}">GitHub</a>
-          </nav>
         </div>
       </header>
       <main class="container my-5">
-        ${generateAbout(about)}
-        ${generateTeam(teamMembers)}
+        ${teamArr}
       </main>
-      <footer class="container text-center py-3">
-        <h3 class="text-dark">&copy;2020 by ${header.name}</h3>
-      </footer>
     </body>
     </html>
     `;

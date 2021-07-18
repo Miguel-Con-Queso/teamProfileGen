@@ -1,12 +1,15 @@
-const { validate } = require('@babel/types');
+const { validate, inheritInnerComments } = require('@babel/types');
 const fs = require('fs');
 const inquirer = require('inquirer');
+const generateSite = require('./utils/generate-site.js');
+const pageTemplate = require('./src/page-template.js');
 
 const promptMan = () => {
-    return inquirer.prompt([
+    inquirer
+        .prompt([
         {
             type: 'input',
-            name: 'managerName',
+            name: 'name',
             message: "What is the Manager's name?",
             validate: mNameInput => {
                 if (mNameInput) {
@@ -19,7 +22,7 @@ const promptMan = () => {
         },
         {
             type: 'input',
-            name: 'managerID',
+            name: 'id',
             message: "What is the manager's ID number?",
             validate: mIDInput => {
                 if (mIDInput) {
@@ -32,7 +35,7 @@ const promptMan = () => {
         },
         {
             type: 'input',
-            name: 'managerEmail',
+            name: 'email',
             message: "What is the manager's email address?",
             validate: mEmailInput => {
                 if (mEmailInput) {
@@ -53,18 +56,44 @@ const promptMan = () => {
                     console.log("Please add an office Number");
                 }
             }
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: 'Confirm that this info belongs to a manager',
+            choices: ['Manager'],
+            validate: mRoleInput => {
+                if (mRoleInput) {
+                    return true;
+                } else {
+                    console.log("Please confirm this is a manager");
+                }
+            }
+        },
+        {
+            type: 'confirm',
+            name: 'confirmAddManager',
+            message: 'Would you like to add another manager?',
+            default: false
         }
-    ]);
+    ])
+    .then(managerData => {
+        if (managerData.confirmAddManager) {
+            return promptMan(managerData);
+        } else {
+            return managerData;
+        }
+    });
 };
 
-const promptEng = engineerData => {
+const promptEng = () => {
     console.log(`
     ===============
     Add an Engineer
     ===============
     `);
 
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: 'input',
@@ -119,6 +148,19 @@ const promptEng = engineerData => {
                 }
             },
             {
+                type: 'list',
+                name: 'role',
+                message: 'Confirm that this info belongs to an engineer',
+                choices: ['Engineer'],
+                validate: eRoleInput => {
+                    if (eRoleInput) {
+                        return true;
+                    } else {
+                        console.log("Please confirm this is an engineer");
+                    }
+                }
+            },
+            {
                 type: 'confirm',
                 name: 'confirmAddEngineer',
                 message: 'Would you like to add another engineer?',
@@ -134,14 +176,14 @@ const promptEng = engineerData => {
         });
 };
 
-const promptInt = internData => {
+const promptInt = () => {
     console.log(`
     =============
     Add an Intern
     =============
     `);
 
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: 'input',
@@ -196,6 +238,19 @@ const promptInt = internData => {
                 }
             },
             {
+                type: 'list',
+                name: 'role',
+                message: 'Confirm that this info belongs to an inter',
+                choices: ['Inter'],
+                validate: iRoleInput => {
+                    if (iRoleInput) {
+                        return true;
+                    } else {
+                        console.log("Please confirm this is an Inter");
+                    }
+                }
+            },
+            {
                 type: 'confirm',
                 name: 'confirmAddIntern',
                 message: 'Would you like to add another intern?',
@@ -211,15 +266,26 @@ const promptInt = internData => {
         });
 };
 
-promptMan()
-    .then(promptEng)
-    .then(engineerData => {
-        console.log(engineerData);
-    })
-    .then(promptInt)
-    .then(internData => {
-        console.log(internData);
-    })
-    .catch(err => {
-        console.log(err);
-    });
+function init() {
+    promptMan()
+        console.log(managerData)
+        .then(promptEng)
+        .then(engineerData => {
+            console.log(engineerData);
+        })
+        .then(promptInt)
+        .then(internData => {
+            console.log(internData)
+            return generateHTML(this.managerData, this.engineerData, internData);
+        })
+        .then(fileContent => {
+            return writeFile(fileContent)
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+init();
+
+module.exports = {promptMan, promptEng, promptInt, managerData, engineerData, internData, fileContent}
