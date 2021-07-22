@@ -143,70 +143,70 @@ const promptInt = [
 
 questions();
 
-// function init() {
-//     inquirer
-//     .prompt(questions)
-//     .then(function (response) {
-//         let name = response.name;
-//         let id = response.id;
-//         let email = response.email;
-//         let role = response.role;
-//         let officeNumber;
-//         let github;
-//         let school;
+function init() {
+    inquirer
+    .prompt(questions)
+    .then(function (response) {
+        let name = response.name;
+        let id = response.id;
+        let email = response.email;
+        let role = response.role;
+        let officeNumber;
+        let github;
+        let school;
 
-//         if(role === 'Manager') {
-//             runPromptMan();
-//         }
+        if(role === 'Manager') {
+            runPromptMan();
+        }
 
-//         const runPromptMan = response => {
-//             inquirer
-//             .prompt(promptMan)
-//             .then(function (response) {
-//                 officeNumber = response.officeNumber;
-//                 let employee = new Manager(name, id, email, officeNumber);
-//                 teamArr.push(employee);
-//                 addEmployee(teamArr);
-//             })
-//         }
+        const runPromptMan = response => {
+            inquirer
+            .prompt(promptMan)
+            .then(function (response) {
+                officeNumber = response.officeNumber;
+                let employee = new Manager(name, id, email, officeNumber);
+                teamArr.push(employee);
+                addEmployee(teamArr);
+            })
+        }
 
-//         if(role === 'Engineer') {
-//             runPromptEng();
-//         }
+        if(role === 'Engineer') {
+            runPromptEng();
+        }
 
-//         const runPromptEng = response => {
-//             inquirer
-//             .prompt(promptEng)
-//             .then(function (response) {
-//                 github = response.github;
-//                 let employee = new Manager(name, id, email, github);
-//                 teamArr.push(employee);
-//                 addEmployee(teamArr);
-//             })
-//         }
+        const runPromptEng = response => {
+            inquirer
+            .prompt(promptEng)
+            .then(function (response) {
+                github = response.github;
+                let employee = new Manager(name, id, email, github);
+                teamArr.push(employee);
+                addEmployee(teamArr);
+            })
+        }
         
-//         if(role === 'Intern') {
-//             runPromptInt();
-//         };
+        if(role === 'Intern') {
+            runPromptInt();
+        };
 
-//         const runPromptInt = response => {
-//             inquirer
-//             .prompt(promptInt)
-//             .then(function (response) {
-//                 school = response.school;
-//                 let employee = new Intern(name, id, email, school);
-//                 teamArr.push(employee);
-//                 addEmployee(teamArr);
-//             })
-//         }
+        const runPromptInt = response => {
+            inquirer
+            .prompt(promptInt)
+            .then(function (response) {
+                school = response.school;
+                let employee = new Intern(name, id, email, school);
+                teamArr.push(employee);
+                addEmployee(teamArr);
+            })
+        }
 
-//         if(response.confirmAddEmployee) {
-//             inquirer
-//             .prompt(questions)
-//         }
-//     })
-// };
+        if(response.confirmAddEmployee) {
+            inquirer
+            .prompt(questions)
+        }
+    })
+};
 
-// init();
+init();
 
 module.exports = {response, employeeData}
