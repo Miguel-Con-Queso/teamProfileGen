@@ -6,20 +6,45 @@ const Employee = require('./lib/Employee.js');
 const Manager = require('./lib/Manager.js');
 const Engineer = require('./lib/Engineer.js');
 const Intern = require('./lib/Intern.js');
+const { listenerAdded } = require('emittery');
+const db = require("./db")
 
 const teamArr = [];
+function createTeam(){
+    inquirer.prompt([
+        {
+        type: "list",
+        name: "employeeChoice",
+        message: "What tyoe of employees would you like to add?",
+        choices: [
+            "Engineer",
+            "Intern",
+            "Manager"
+        ]
+        }
+    ]).then(userChoice => {
+        switch(userChoice.employeeChoice){
+            case "Engineer":
+            addEngineer();
+            break;
+            default:
+            buildTeamList()
+
+        }
+    })
+}
+
 
 const questions = [
     {
         type: 'input',
         name: 'name',
         message: "What is this employee's name?",
-        validate: nameInput => {
-            if (nameInput) {
+        validate: answer => {
+            if (answer !== "") {
                 return true;
             } else {
-                console.log("Please provide an employee name");
-                return false;
+                "Please provide an employee name";
             }
         }
     },
@@ -27,12 +52,11 @@ const questions = [
         type: 'input',
         name: 'id',
         message: "What is this employee's ID number?",
-        validate: IDInput => {
-            if (IDInput) {
+        validate: answer => {
+            if (answer !== null) {
                 return true;
             } else {
-                console.log("Please enter an ID number");
-                return false;
+                return "Please enter an ID number";
             }
         }
     },
@@ -129,6 +153,7 @@ const promptInt = [
 
 
 function init() {
+    
     inquirer
     .prompt(questions)
     .then(function (response) {
