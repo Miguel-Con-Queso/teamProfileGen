@@ -35,13 +35,21 @@ function createTeam(){
 }
 
 
-const questions = [
+function questions() {
+    inquirer
+        .prompt([
     {
         type: 'input',
         name: 'name',
         message: "What is this employee's name?",
+<<<<<<< HEAD
         validate: answer => {
             if (answer !== "") {
+=======
+        validate: nameInput => {
+            if (nameInput) {
+                console.log('Pleeeeeeeeeeeeeeeeeease')
+>>>>>>> 424ff9acc090e1ed9e3537f636a26a2a6b6fc021
                 return true;
             } else {
                 "Please provide an employee name";
@@ -83,7 +91,18 @@ const questions = [
             }
         }
     },
-];
+])
+    .then(response => {
+        const name = response.name
+        const id = response.id
+        const email = response.email
+        const role = response.role
+
+        let employee = new Manager(name, id, email, officeNumber)
+        teamArr.push(name, id, email, role)
+        console.log(teamArr);
+    })
+}
 
 const promptMan = [
         {
@@ -151,6 +170,7 @@ const promptInt = [
             }
 ];
 
+questions();
 
 function init() {
     
