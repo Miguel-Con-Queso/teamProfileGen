@@ -1,7 +1,7 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
-const generateSite = require('./utils/generate-site.js');
-const pageTemplate = require('./src/page-template.js');
+// const generateSite = require('./utils/generate-site.js');
+// const pageTemplate = require('./src/page-template.js');
 const Employee = require('./lib/Employee.js');
 const Manager = require('./lib/Manager.js');
 const Engineer = require('./lib/Engineer.js');
@@ -58,23 +58,13 @@ function addEngineer() {
                     return "Do you really not know your employee's well enough to answer this?";
                 }
             }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to add another employee?',
-            default: false
         }
     ]).then(answer => {
-            let engineer = new Engineer(name, id, email, github);
+            let engineer = new Engineer(answer.name, answer.id, answer.email, "Engineer", answer.github);
             teamArr.push(engineer);
-            addEmployee(teamArr);
-    }).then(answer => {
-        if (answer.confirmAddEmployee == true) {
             createTeam();
-        }
     })
-}
+};
 
 function addIntern() {
     inquirer.prompt([
@@ -125,21 +115,11 @@ function addIntern() {
                     return "Do you really not know your employee's well enough to answer this?";
                 }
             }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to add another employee?',
-            default: false
         }
     ]).then(answer => {
-        let intern = new Intern(name, id, email, school);
+        let intern = new Intern(answer.name, answer.id, answer.email, "Intern", answer.school);
         teamArr.push(intern);
-        addEmployee(teamArr);
-    }).then(answer => {
-        if (answer.confirmAddEmployee == true) {
-            createTeam();
-        }
+        createTeam();
     })
 }
 
@@ -192,23 +172,115 @@ function addManager() {
                     return "Please add an office Number";
                 }
             }
-        },
-        {
-            type: 'confirm',
-            name: 'confirmAddEmployee',
-            message: 'Would you like to add another employee?',
-            default: false
         }
     ]).then(answer => {
-        let manager = new Manager(name, id, email, officeNumber);
+        let manager = new Manager(answer.name, answer.id, answer.email, "Manager", answer.officeNumber);
         teamArr.push(manager);
-        addEmployee(teamArr);
-}).then(answer => {
-        if (answer.confirmAddEmployee == true) {
-            createTeam();
-        }
+        createTeam();
     })
 }
+
+const writeToFile = data => {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./generated.html', data, err => {
+            if (err) {
+                reject(err);
+            }
+
+            resolve({
+                ok: true,
+                message: 'Page generated!'
+            });
+        });
+    });
+};
+
+const generateHTML = cardArr => {
+    const result = `
+    <!DOCTYPE html>
+    <html lang="en">
+    
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Portfolio Demo</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css?family=Public+Sans:300i,300,500&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="style.css">
+    </head>
+    
+    <body>
+      <header>
+        <div class="container flex-row justify-space-between align-center py-3">
+        </div>
+      </header>
+      <main class="container my-5">
+        ${teamArr.map((employee) => {
+            return teamArrToHTML(employee)
+        }).join('')}
+      </main>
+    </body>
+    </html>
+    `;
+    writeToFile(result);
+}
+
+function teamArrToHTML() {
+    const cardArr = teamArr.map(o => {
+        switch (o.role) {
+            case 'Manager':
+                () => {
+                    return `
+                <div class='employee-card'>
+                <div class='manager-card'>
+                    <p class='card-title'> Manager </p>
+                    <p>Name: ${Manager.getName()}</p>
+                    <p>Id: ${Manager.getId()}</p>
+                    <p>Email: ${Manager.getEmail()}</p>
+                    <p class='p-final'>OfficeNumber: ${Manager.getOffice()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+
+            case 'Engineer':
+                () => {
+                    `
+                <div class='employee-card'>
+                <div class='engineer-card'>
+                    <p class='card-title'> engineer </p>
+                    <p>Name: ${Engineer.getName()}</p>
+                    <p>Id: ${Engineer.getId()}</p>
+                    <p>Email: ${Engineer.getEmail()}</p>
+                    <p class='p-final'>Github: ${Engineer.getGithub()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+
+            case 'Intern':
+                () => {`
+                <div class='employee-card'>
+                <div class='intern-card'>
+                    <p class='card-title'> Inter </p>
+                    <p>Name: ${Intern.getName()}</p>
+                    <p>Id: ${Intern.getId()}</p>
+                    <p>Email: ${Intern.getEmail()}</p>
+                    <p class='p-final'>School: ${Intern.getSchool()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+            default:
+                generateHTML(cardArr);
+        }
+    });
+}
+
 
 function createTeam(){
     inquirer.prompt([
@@ -219,7 +291,8 @@ function createTeam(){
         choices: [
             "Engineer",
             "Intern",
-            "Manager"
+            "Manager",
+            "None"
         ]
         }
     ]).then(answer => {
@@ -227,28 +300,20 @@ function createTeam(){
             case "Engineer":
                 addEngineer();
                 break;
-                default:
-                    buildTeamList()
-        }
-    }).then(answer => {
-        switch(answer.role){
+
             case "Intern":
                 addIntern();
                 break;
-                default:
-                    buildTeamList()
-        }
-    }).then(answer => {
-        switch(answer.role){
+
             case "Manager":
                 addManager();
                 break;
-                default:
-                    buildTeamList()
+
+            default:
+                teamArrToHTML();
         }
+                    
     })
 }
 
 createTeam();
-
-module.exports = answer
