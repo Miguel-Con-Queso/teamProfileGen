@@ -181,6 +181,7 @@ function addManager() {
 }
 
 const writeToFile = data => {
+    generateHTML();
     return new Promise((resolve, reject) => {
         fs.writeFile('./generated.html', data, err => {
             if (err) {
@@ -195,8 +196,66 @@ const writeToFile = data => {
     });
 };
 
-const generateHTML = cardArr => {
-    const result = `
+function teamArrToHTML() {
+    const cardArr = teamArr.map(o => {
+        switch (o.role) {
+            case 'Manager':
+                () => {
+                return `
+                <div class='employee-card'>
+                <div class='manager-card'>
+                    <p class='card-title'> Manager </p>
+                    <p>Name: ${getName()}</p>
+                    <p>Id: ${getId()}</p>
+                    <p>Email: ${getEmail()}</p>
+                    <p class='p-final'>OfficeNumber: ${getOffice()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+
+            case 'Engineer':
+                () => {
+                return `
+                <div class='employee-card'>
+                <div class='engineer-card'>
+                    <p class='card-title'> engineer </p>
+                    <p>Name: ${getName()}</p>
+                    <p>Id: ${getId()}</p>
+                    <p>Email: ${getEmail()}</p>
+                    <p class='p-final'>Github: ${getGithub()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+
+            case 'Intern':
+                () => {
+                return `
+                <div class='employee-card'>
+                <div class='intern-card'>
+                    <p class='card-title'> Inter </p>
+                    <p>Name: ${getName()}</p>
+                    <p>Id: ${getId()}</p>
+                    <p>Email: ${getEmail()}</p>
+                    <p class='p-final'>School: ${getSchool()}</p>
+                </div>
+                </div> 
+                `
+                };
+                break;
+            default:
+                console.log('cardArr finished?')
+                return results
+        }
+    });
+    return cardArr;
+}
+
+const generateHTML = () => {
+    const results = `
     <!DOCTYPE html>
     <html lang="en">
     
@@ -216,70 +275,16 @@ const generateHTML = cardArr => {
         </div>
       </header>
       <main class="container my-5">
-        ${teamArr.map((employee) => {
-            return teamArrToHTML(employee)
-        }).join('')}
+        ${teamArrToHTML()}
       </main>
     </body>
     </html>
     `;
-    writeToFile(result);
+
+    return results;
 }
 
-function teamArrToHTML() {
-    const cardArr = teamArr.map(o => {
-        switch (o.role) {
-            case 'Manager':
-                () => {
-                    return `
-                <div class='employee-card'>
-                <div class='manager-card'>
-                    <p class='card-title'> Manager </p>
-                    <p>Name: ${Manager.getName()}</p>
-                    <p>Id: ${Manager.getId()}</p>
-                    <p>Email: ${Manager.getEmail()}</p>
-                    <p class='p-final'>OfficeNumber: ${Manager.getOffice()}</p>
-                </div>
-                </div> 
-                `
-                };
-                break;
 
-            case 'Engineer':
-                () => {
-                    `
-                <div class='employee-card'>
-                <div class='engineer-card'>
-                    <p class='card-title'> engineer </p>
-                    <p>Name: ${Engineer.getName()}</p>
-                    <p>Id: ${Engineer.getId()}</p>
-                    <p>Email: ${Engineer.getEmail()}</p>
-                    <p class='p-final'>Github: ${Engineer.getGithub()}</p>
-                </div>
-                </div> 
-                `
-                };
-                break;
-
-            case 'Intern':
-                () => {`
-                <div class='employee-card'>
-                <div class='intern-card'>
-                    <p class='card-title'> Inter </p>
-                    <p>Name: ${Intern.getName()}</p>
-                    <p>Id: ${Intern.getId()}</p>
-                    <p>Email: ${Intern.getEmail()}</p>
-                    <p class='p-final'>School: ${Intern.getSchool()}</p>
-                </div>
-                </div> 
-                `
-                };
-                break;
-            default:
-                generateHTML(cardArr);
-        }
-    });
-}
 
 
 function createTeam(){
@@ -310,10 +315,12 @@ function createTeam(){
                 break;
 
             default:
-                teamArrToHTML();
-        }
-                    
-    })
+                console.log(teamArr);
+  
+        }; 
+        writeToFile(data); 
+    });
+
 }
 
 createTeam();
