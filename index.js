@@ -181,9 +181,9 @@ function addManager() {
 }
 
 const writeToFile = data => {
-    generateHTML();
+    const generatedHTML = generateHTML(data);
     return new Promise((resolve, reject) => {
-        fs.writeFile('./generated.html', data, err => {
+        fs.writeFile('./dest/generated.html', generatedHTML, err => {
             if (err) {
                 reject(err);
             }
@@ -200,52 +200,61 @@ function teamArrToHTML() {
     const cardArr = teamArr.map(o => {
         switch (o.role) {
             case 'Manager':
-                () => {
                 return `
-                <div class='employee-card'>
-                <div class='manager-card'>
-                    <p class='card-title'> Manager </p>
-                    <p>Name: ${getName()}</p>
-                    <p>Id: ${getId()}</p>
-                    <p>Email: ${getEmail()}</p>
-                    <p class='p-final'>OfficeNumber: ${getOffice()}</p>
+                <div class="col-md-6 col-lg-4">
+                    <div class='card employee-card'>
+                        <div class='manager-card'>
+                            <div class='card-header bg-dark text-light'> 
+                                <h2><i class="fas fa-mug-hot"></i> Manager</h2>
+                            </div>
+                            <ul class="list-group list-group-flush list-unstyled">
+                                <li class=list-group-item"><h3>Name: ${o.getName()}</h3></li>
+                                <li class=list-group-item">Id: ${o.getId()}</li>
+                                <li class=list-group-item">Email: <a href="mailto:${o.getEmail()}">${o.getEmail()}</a></li>
+                                <li class=list-group-item">OfficeNumber: ${o.getOffice()}</li>
+                            </ul>
+                        </div>
+                    </div> 
                 </div>
-                </div> 
                 `
-                };
-                break;
 
             case 'Engineer':
-                () => {
                 return `
-                <div class='employee-card'>
-                <div class='engineer-card'>
-                    <p class='card-title'> engineer </p>
-                    <p>Name: ${getName()}</p>
-                    <p>Id: ${getId()}</p>
-                    <p>Email: ${getEmail()}</p>
-                    <p class='p-final'>Github: ${getGithub()}</p>
-                </div>
+                <div class="col-md=6 col-lg-4">
+                    <div class='card employee-card'>
+                        <div class='engineer-card'>
+                            <div class='card-header bg-dark text-light'>
+                                <h2><i class="fas fa-glasses"></i> Engineer</h2>
+                            </div>
+                            <ul class="list-group list-group-flush list-unstyled">
+                                <li class=list-group-item"><h3>Name: ${o.getName()}</h3></li>
+                                <li class=list-group-item">Id: ${o.getId()}</li>
+                                <li class=list-group-item">Email: <a href="mailto:${o.getEmail()}">${o.getEmail()}</a></li>
+                                <li class=list-group-item">Github: <a href="https://github.com/${o.getGithub()}" target="_blank">${o.getGithub()}</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div> 
                 `
-                };
-                break;
 
             case 'Intern':
-                () => {
                 return `
-                <div class='employee-card'>
-                <div class='intern-card'>
-                    <p class='card-title'> Inter </p>
-                    <p>Name: ${getName()}</p>
-                    <p>Id: ${getId()}</p>
-                    <p>Email: ${getEmail()}</p>
-                    <p class='p-final'>School: ${getSchool()}</p>
+                <div class="col-md-6 col-lg-4">
+                    <div class='card employee-card'>
+                        <div class='intern-card'>
+                            <div class='card-header bg-dark text-light'>
+                                <h2><i class="fas fa-user-graduate"></i> Intern</h2>
+                            </div>
+                            <ul class="list-group list-group-flush list-unstyled">
+                                <li class=list-group-item"><h3>Name: ${o.getName()}<h3></li>
+                                <li class=list-group-item">Id: ${o.getId()}</li>
+                                <li class=list-group-item">Email: <a href="mailto:${o.getEmail()}">${o.getEmail()}</a></li>
+                                <li class=list-group-item">School: ${o.getSchool()}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                </div> 
                 `
-                };
-                break;
             default:
                 console.log('cardArr finished?')
                 return results
@@ -264,9 +273,9 @@ const generateHTML = () => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <title>Portfolio Demo</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
-      <link href="https://fonts.googleapis.com/css?family=Public+Sans:300i,300,500&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+      <link href="https://fonts.googleapis.com/css?family=Public+Sans:300i,300,500&display=swap" rel="stylesheet" />
     </head>
     
     <body>
@@ -275,7 +284,9 @@ const generateHTML = () => {
         </div>
       </header>
       <main class="container my-5">
-        ${teamArrToHTML()}
+        <div class="row">
+            ${teamArrToHTML().join('')}
+        </div>
       </main>
     </body>
     </html>
@@ -316,9 +327,8 @@ function createTeam(){
 
             default:
                 console.log(teamArr);
-  
+                writeToFile(teamArr); 
         }; 
-        writeToFile(data); 
     });
 
 }
